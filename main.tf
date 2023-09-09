@@ -1,29 +1,18 @@
-# Create S3 Bucket Resource
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket = var.bucket_name
-  acl    = "public-read"
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-      {
-          "Sid": "PublicReadGetObject",
-          "Effect": "Allow",
-          "Principal": "*",
-          "Action": [
-              "s3:GetObject"
-          ],
-          "Resource": [
-              "arn:aws:s3:::${var.bucket_name}/*"
-          ]
-      }
-  ]
-}  
-EOF
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
+# Create EC2 Instance
+resource "aws_instance" "my-ec2-vm" {
+  ami                    = var.ec2_ami_id
+  instance_type          = "t2.micro"
+  count                  = var.ec2_instance_count
+  #user_data              = <<-EOF
+    #!/bin/bash
+    #sudo yum update -y
+    #sudo yum install httpd -y
+    #sudo systemctl enable httpd
+    #sudo systemctl start httpd
+    #echo "<h1>Welcome to Technology ! AWS Infra created using Terraform in ap-south-1 Region</h1>" > /var/www/html/index.html
+    #EOF
+  #vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+  tags = {
+    "Name" = "myec2vm"
   }
-  tags          = var.tags
-  force_destroy = true
 }
